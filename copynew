@@ -6,4 +6,3 @@ cp ./proc.h /usr/src/kernel/
 cp ./proc.c /usr/src/kernel/
 cp ./schedproc.h /usr/src/servers/sched/
 cp ./schedule.c /usr/src/servers/sched/
-

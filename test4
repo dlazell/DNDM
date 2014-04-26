@@ -5,7 +5,3 @@ echo The process with 1 ticket should still run (not be starved)
 #
 time ./cpu 2500000 -19 &
 time ./cpu 2500000 80 &
-
-
-
-

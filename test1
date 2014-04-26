@@ -5,4 +5,3 @@ echo They should both have similar runtimes
 #
 time ./cpu 2500000 0 &
 time ./cpu 2500000 0 &
-

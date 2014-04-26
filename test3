@@ -6,5 +6,3 @@ echo They should have runtimes of a similar ratio
 time ./cpu 2500000 5 &
 time ./cpu 2500000 30 &
 time ./cpu 2500000 80 &
-
-

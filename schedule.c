@@ -44,6 +44,8 @@ PUBLIC int do_noquantum(message *m_ptr)
         rmp->priority += 1; /* lower priority */
     }
 
+printf("do_noquantum: rescheduling process %d with priority %d\n", proc_nr_n, rmp->priority);
+    
     if ((rv = schedule_process(rmp)) != OK) {
         return rv;
     }
@@ -113,6 +115,7 @@ PUBLIC int do_start_scheduling(message *m_ptr)
          * from the parent */
         rmp->priority   = rmp->max_priority;
         rmp->time_slice = (unsigned) m_ptr->SCHEDULING_QUANTUM;
+printf("do_start_scheduling: sceduling system process %d with priority %d and quantum %d\n", proc_nr_n, rmp->priority, rmp->time_slice);
         break;
         
     case SCHEDULING_INHERIT:
@@ -125,6 +128,9 @@ PUBLIC int do_start_scheduling(message *m_ptr)
 
         rmp->priority = schedproc[parent_nr_n].priority;
         rmp->time_slice = schedproc[parent_nr_n].time_slice;
+/*
+printf("do_start_scheduling: sceduling user process %d with priority %d and quantum %d\n", proc_nr_n, rmp->priority, rmp->time_slice);
+*/
         break;
         
     default: 

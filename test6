@@ -10,8 +10,3 @@ time ./io 5000 0
 echo Running both concurrently:
 time ./cpu 2500000 0 &
 time ./io 5000 0 &
-
-
-
-
-

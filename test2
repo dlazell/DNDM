@@ -5,4 +5,3 @@ echo One task should finish in about half the time
 #
 time ./cpu 2500000 0 &
 time ./cpu 2500000 20 &
-
