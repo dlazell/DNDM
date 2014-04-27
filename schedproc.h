@@ -1,5 +1,3 @@
-/* MODIFIED 4-25-14 */
-
 /* This table has one slot per process.  It contains scheduling information
  * for each process.
  */
@@ -17,18 +15,16 @@
  */
 
 EXTERN struct schedproc {
-    endpoint_t endpoint;    /* process endpoint id */
-    endpoint_t parent;  /* parent endpoint id */
-    unsigned flags;     /* flag bits */
+	endpoint_t endpoint;	/* process endpoint id */
+	endpoint_t parent;	/* parent endpoint id */
+	unsigned flags;		/* flag bits */
 
-    /* User space scheduling */
-    unsigned max_priority;  /* this process' highest allowed priority */
-    unsigned priority;      /* the process' current priority */
-    unsigned time_slice;        /* this process's time slice */
-/* CHANGE START */
-    unsigned tickets;         /* the number of tickets this process has */
-/* CHANGE END */
+	/* User space scheduling */
+	unsigned max_priority;	/* this process' highest allowed priority */
+	unsigned priority;		/* the process' current priority */
+	unsigned time_slice;		/* this process's time slice */
+    unsigned ticketsNum;
 } schedproc[NR_PROCS];
 
 /* Flag values */
-#define IN_USE      0x00001 /* set when 'schedproc' slot in use */
+#define IN_USE		0x00001	/* set when 'schedproc' slot in use */

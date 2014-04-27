@@ -1,5 +1,3 @@
-/* MODIFIED 4-25-14 */
-
 /* This file contains some utility routines for PM.
  *
  * The entry points are:
@@ -111,13 +109,7 @@ pid_t lpid;
  *===========================================================================*/
 PUBLIC int nice_to_priority(int nice, unsigned* new_q)
 {
-/* CHANGE START */
-    /* the nice value is the number of tickets to add or subtract
-       We do not want to limit the values. */
-    *new_q = nice;
-    return (OK);
-/* CHANGE END */
-    if (nice < PRIO_MIN || nice > PRIO_MAX) return(EINVAL);
+	if (nice < PRIO_MIN || nice > PRIO_MAX) return(EINVAL);
 
 	*new_q = MAX_USER_Q + (nice-PRIO_MIN) * (MIN_USER_Q-MAX_USER_Q+1) /
 	    (PRIO_MAX-PRIO_MIN+1);
