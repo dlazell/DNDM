@@ -1,5 +1,3 @@
-/* MODIFIED 4-25-14 */
-
 #ifndef _CONFIG_H
 #define _CONFIG_H
 
@@ -34,15 +32,15 @@
  *
  * These can be changed in sys_config.h.
  */
-#define NR_PROCS          _NR_PROCS 
+#define NR_PROCS 	  _NR_PROCS 
 #define NR_SYS_PROCS      _NR_SYS_PROCS
-#define NR_SYS_CHUNKS     BITMAP_CHUNKS(NR_SYS_PROCS)
+#define NR_SYS_CHUNKS	  BITMAP_CHUNKS(NR_SYS_PROCS)
 
 /* Number of controller tasks (/dev/cN device classes). */
 #define NR_CTRLRS          2
 
 /* DMA_SECTORS may be increased to speed up DMA based drivers. */
-#define DMA_SECTORS        1    /* DMA buffer size (must be >= 1) */
+#define DMA_SECTORS        1	/* DMA buffer size (must be >= 1) */
 
 /* Which processes should receive diagnostics from the kernel and system? 
  * Directly sending it to TTY only displays the output. Sending it to the
@@ -53,70 +51,64 @@
  * The kernel does this for its own kprintf() in kernel/utility.c, also using
  * this array, but a slightly different mechanism.
  */
-#define OUTPUT_PROCS_ARRAY  { TTY_PROC_NR, LOG_PROC_NR, NONE }
+#define OUTPUT_PROCS_ARRAY	{ TTY_PROC_NR, LOG_PROC_NR, NONE }
 
 /* NR_CONS, NR_RS_LINES, and NR_PTYS determine the number of terminals the
  * system can handle.
  */
-#define NR_CONS        4    /* # system consoles (1 to 8) */
-#define NR_RS_LINES    4    /* # rs232 terminals (0 to 4) */
-#define NR_PTYS        32   /* # pseudo terminals (0 to 64) */
+#define NR_CONS            4	/* # system consoles (1 to 8) */
+#define	NR_RS_LINES	   4	/* # rs232 terminals (0 to 4) */
+#define	NR_PTYS		   32	/* # pseudo terminals (0 to 64) */
 
 /* This feature enable the counting of system calls in PM and FS */
-#define ENABLE_SYSCALL_STATS    0
+#define ENABLE_SYSCALL_STATS	0
 
 /* Max. number of I/O ranges that can be assigned to a process */
-#define NR_IO_RANGE 64
+#define NR_IO_RANGE	64
 
 /* Max. number of device memory ranges that can be assigned to a process */
-#define NR_MEM_RANGE    20
+#define NR_MEM_RANGE	20
 
 /* Max. number of IRQs that can be assigned to a process */
-#define NR_IRQ  8
+#define NR_IRQ	8
 
 /* Scheduling priorities. Values must start at zero (highest
  * priority) and increment.
  */
-/* CHANGE START */
-/* changed from 16 */
-#define NR_SCHED_QUEUES   19    /* MUST equal minimum priority + 1 */
-/* CHANGE END */
-#define TASK_Q         0    /* highest, used for kernel tasks */
-/* CHANGE START */
-/* changed from 0 */
-#define MAX_USER_Q         16    /* highest priority for user processes */   
-/* CHANGE END */
-#define USER_Q        ((MIN_USER_Q - MAX_USER_Q) / 2 + MAX_USER_Q) /* default
-                        (should correspond to nice 0) */
-#define MIN_USER_Q    (NR_SCHED_QUEUES - 1) /* minimum priority for user
-                           processes */
+#define NR_SCHED_QUEUES   16	/* MUST equal minimum priority + 1 */
+#define TASK_Q		   0	/* highest, used for kernel tasks */
+#define MAX_USER_Q  	   0    /* highest priority for user processes */   
+#define USER_Q  	  ((MIN_USER_Q - MAX_USER_Q) / 2 + MAX_USER_Q) /* default
+						(should correspond to nice 0) */
+#define MIN_USER_Q	  (NR_SCHED_QUEUES - 1)	/* minimum priority for user
+						   processes */
 /* default scheduling quanta */
 #define USER_QUANTUM 200
 
 /* defualt user process cpu */
-#define USER_DEFAULT_CPU    -1 /* use the default cpu or do not change the
-                      current one */
+#define USER_DEFAULT_CPU	-1 /* use the default cpu or do not change the
+				      current one */
 
 /*===========================================================================*
- *  There are no user-settable parameters after this line            *
+ *	There are no user-settable parameters after this line		     *
  *===========================================================================*/
 /* Set the CHIP type based on the machine selected. The symbol CHIP is actually
  * indicative of more than just the CPU.  For example, machines for which
  * CHIP == INTEL are expected to have 8259A interrrupt controllers and the
  * other properties of IBM PC/XT/AT/386 types machines in general. */
-#define INTEL             _CHIP_INTEL   /* CHIP type for PC, XT, AT, 386 and clones */
-#define M68000            _CHIP_M68000  /* CHIP type for Atari, Amiga, Macintosh    */
-#define SPARC             _CHIP_SPARC   /* CHIP type for SUN-4 (e.g. SPARCstation)  */
+#define INTEL             _CHIP_INTEL	/* CHIP type for PC, XT, AT, 386 and clones */
+#define M68000            _CHIP_M68000	/* CHIP type for Atari, Amiga, Macintosh    */
+#define SPARC             _CHIP_SPARC	/* CHIP type for SUN-4 (e.g. SPARCstation)  */
 
 /* Set the FP_FORMAT type based on the machine selected, either hw or sw    */
-#define FP_NONE  _FP_NONE   /* no floating point support                */
-#define FP_IEEE  _FP_IEEE   /* conform IEEE floating point standard     */
+#define FP_NONE	 _FP_NONE	/* no floating point support                */
+#define FP_IEEE	 _FP_IEEE	/* conform IEEE floating point standard     */
 
 /* _MINIX_CHIP is defined in sys_config.h. */
-#define CHIP    _MINIX_CHIP
+#define CHIP	_MINIX_CHIP
 
 /* _MINIX_FP_FORMAT is defined in sys_config.h. */
-#define FP_FORMAT   _MINIX_FP_FORMAT
+#define FP_FORMAT	_MINIX_FP_FORMAT
 
 /* _ASKDEV and _FASTLOAD are defined in sys_config.h. */
 #define ASKDEV _ASKDEV

@@ -17,9 +17,12 @@
 #include "kernel/proc.h" /* for queue constants */
 
 /* CHANGE START */
-#define HOLDING_Q       (MAX_USER_Q + 1)
+#define HOLDING_Q       14
                         /* this should be the queue in which processes are in
                            when they have not won the lottery */
+#define WINNING_Q       13
+                        /* this should be the queue in which processes are in
+                        when they HAVE won the lottery */
 #define STARTING_TICKETS 20 /* the number of tickets each process starts with */
 
 #define MAX_TICKETS     100 /* the max number of tickets a process can have */
@@ -68,7 +71,7 @@ PUBLIC int do_lottery() {
 
     printf("Process %d won with %d of %d tickets\n", proc_nr_n, rmp->tickets, total_tickets);
     /* schedule new winning process */
-    rmp->priority = MAX_USER_Q;
+    rmp->priority = WINNING_Q;
     rmp->time_slice = USER_QUANTUM;
     if ((rv = schedule_process(rmp)) != OK) /* move process to winner queue */
         return rv;
@@ -92,11 +95,11 @@ PUBLIC int do_lottery() {
 
     rmp = &schedproc[proc_nr_n];
 /* CHANGE START */
-    if (rmp->priority == 18)
-        printf("Error, process has priority of 18\n");
-    if (rmp->priority == MAX_USER_Q) /* user process */
+    if (rmp->priority == 15)
+        printf("Error, process has priority of 15\n");
+    if (rmp->priority == WINNING_Q) /* user process */
         rmp->priority = HOLDING_Q;
-    else if (rmp->priority < MAX_USER_Q - 1) /* kernel process */
+    else if (rmp->priority < WINNING_Q - 1) /* kernel process */
         rmp->priority++;
 
     if ((rv = schedule_process(rmp)) != OK) /* move process to holding queue */
@@ -332,7 +335,7 @@ PRIVATE void balance_queues(struct timer *tp) {
         if (rmp->flags & IN_USE) {
 /* CHANGE START */
             /* we only want to change kernel processes */
-            if (rmp->priority > rmp->max_priority && rmp->priority < MAX_USER_Q) {
+            if (rmp->priority > rmp->max_priority && rmp->priority < WINNING_Q) {
 /* CHANGE END */
                 rmp->priority -= 1; /* increase priority */
                 schedule_process(rmp);
