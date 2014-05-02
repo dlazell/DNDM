@@ -36,7 +36,8 @@ EXTERN struct schedproc {
 								process allowed
 								to run on */
 /* CHANGE START */
-    unsigned tickets;         /* the number of tickets for this process, changed by nice */
+    unsigned current_tickets;         /* the number of tickets for this process, dynamically changed*/
+    unsigned starting_tickets;         /* the number of tickets for this process, changed by nice */
 /* CHANGE END */
 
 } schedproc[NR_PROCS];

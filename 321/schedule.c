@@ -112,7 +112,7 @@ int do_lottery()
     /* rather than computing it every time */
     for (proc_nr = 0, rmp = schedproc; proc_nr < NR_PROCS; ++proc_nr, ++rmp)
         if (rmp->priority == HOLDING_Q && rmp->flags == IN_USE) /* winnable? */
-            total_tickets += rmp->tickets;
+            total_tickets += rmp->current_tickets;
 
     if (!total_tickets) /* there were no winnable processes */
         return OK;
@@ -126,7 +126,7 @@ int do_lottery()
     /* now find the process with the winning ticket */
     for (proc_nr = 0, rmp = schedproc; proc_nr < NR_PROCS; ++proc_nr, ++rmp) {
         if (rmp->priority == HOLDING_Q && rmp->flags == IN_USE) /* winnable? */
-            winner -= rmp->tickets;
+            winner -= rmp->current_tickets;
         if (winner <= 0)
             break;
     }
@@ -142,16 +142,27 @@ int do_lottery()
 }
 
 /*===========================================================================*
-*              change_tickets                     *
+*              change_starting_tickets                     *
 *===========================================================================*/
 
-inline void change_tickets(struct schedproc *rmp, int qty)
-{
-    rmp->tickets += qty;
-    if (rmp->tickets > MAX_TICKETS)
-        rmp->tickets = MAX_TICKETS;
-    if (rmp->tickets < MIN_TICKETS)
-        rmp->tickets = MIN_TICKETS;
+inline void change_starting_tickets(struct schedproc *rmp, int qty) {
+    rmp->starting_tickets += qty;
+    if (rmp->starting_tickets > MAX_TICKETS)
+        rmp->starting_tickets = MAX_TICKETS;
+    if (rmp->starting_tickets < MIN_TICKETS)
+        rmp->starting_tickets = MIN_TICKETS;
+}
+
+/*===========================================================================*
+*              change_current_tickets                     *
+*===========================================================================*/
+
+inline void change_current_tickets(struct schedproc *rmp, int qty) {
+    rmp->current_tickets += qty;
+    if (rmp->current_tickets > MAX_TICKETS)
+        rmp->current_tickets = MAX_TICKETS;
+    if (rmp->current_tickets < MIN_TICKETS)
+        rmp->current_tickets = MIN_TICKETS;
 }
 
 /*===========================================================================*
@@ -163,23 +174,23 @@ inline void dynamic_adjust(struct schedproc *rmp, int blocking)
     int newquantum;
 
     if (blocking < 10) {
-        change_tickets(rmp, -2);
+        change_current_tickets(rmp, -2);
         newquantum = 200;
     }
     if (blocking >= 10 && blocking < 1000) {
-        change_tickets(rmp, 0);
+        change_current_tickets(rmp, 0);
         newquantum = 160;
     }
     if (blocking >= 1000 && blocking < 2000) {
-        change_tickets(rmp, 1);
+        change_current_tickets(rmp, 1);
         newquantum = 80;
     }
     if (blocking >= 2000 && blocking < 3000) {
-        change_tickets(rmp, 1);
+        change_current_tickets(rmp, 1);
         newquantum = 40;
     }
     if (blocking >= 3000) {
-        change_tickets(rmp, 2);
+        change_current_tickets(rmp, 2);
         newquantum = 20;
     }
 
@@ -282,8 +293,9 @@ int do_start_scheduling(message *m_ptr)
 	rmp->parent       = m_ptr->SCHEDULING_PARENT;
 	rmp->max_priority = (unsigned) m_ptr->SCHEDULING_MAXPRIO;
 /* CHANGE START */
-    rmp->tickets = STARTING_TICKETS;
-/* CHANGE END */
+    rmp->current_tickets = STARTING_TICKETS;
+    rmp->starting_tickets = STARTING_TICKETS;
+    /* CHANGE END */
 
 	if (rmp->max_priority >= NR_SCHED_QUEUES) {
 		return EINVAL;
@@ -404,8 +416,9 @@ int do_nice(message *m_ptr)
 /* CHANGE START */
     tickets_to_add = (unsigned)m_ptr->SCHEDULING_MAXPRIO;
 
-    change_tickets(rmp, tickets_to_add);
-/* CHANGE END */
+    change_starting_tickets(rmp, tickets_to_add);
+    change_current_tickets(rmp, tickets_to_add);
+    /* CHANGE END */
 
 	return rv;
 }
