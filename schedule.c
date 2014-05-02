@@ -46,7 +46,7 @@ PRIVATE void debug() {
 
     q13 = q14 = q15 = qsys = q13io = q14io = q15io = 0;
     for (proc_nr_n = 0, rmp = schedproc; proc_nr_n < NR_PROCS; ++proc_nr_n, ++rmp)
-        if (rmp->flags == (IN_USE | USER_PROCESS)) {
+        if (rmp->flags == IN_USE) {
             printf("process %d priority %d tickets %d blocked %d times\n", proc_nr_n, rmp->priority, rmp->tickets, rmp->blocking);
             if (rmp->priority == WINNING_Q) {
                 q13++;
@@ -76,7 +76,7 @@ PRIVATE int count_winners() {
 
     winners = 0;
     for (proc_nr_n = 0, rmp = schedproc; proc_nr_n < NR_PROCS; ++proc_nr_n, ++rmp)
-        if (rmp->flags == (IN_USE | USER_PROCESS))
+        if (rmp->flags == IN_USE)
             if (rmp->priority == WINNING_Q)
                 winners++;
 
@@ -100,7 +100,7 @@ PRIVATE int do_lottery() {
     /* we really should have a global to keep track of this total */
     /* rather than computing it every time */
     for (proc_nr = 0, rmp = schedproc; proc_nr < NR_PROCS; ++proc_nr, ++rmp)
-        if (rmp->priority == HOLDING_Q && rmp->flags == (IN_USE | USER_PROCESS)) /* winnable? */
+        if (rmp->priority == HOLDING_Q && rmp->flags == IN_USE) /* winnable? */
             total_tickets += rmp->tickets;
     
     if (!total_tickets) /* there were no winnable processes */
@@ -114,7 +114,7 @@ PRIVATE int do_lottery() {
 
     /* now find the process with the winning ticket */
     for (proc_nr = 0, rmp = schedproc; proc_nr < NR_PROCS; ++proc_nr, ++rmp) {
-        if (rmp->priority == HOLDING_Q && rmp->flags == (IN_USE | USER_PROCESS)) /* winnable? */
+        if (rmp->priority == HOLDING_Q && rmp->flags == IN_USE) /* winnable? */
             winner -= rmp->tickets;
         if (winner <= 0)
             break;
@@ -166,7 +166,7 @@ PUBLIC int do_noquantum(message *m_ptr) {
 /* CHANGE START */
     printf("do_noquantum, priority %d\n", rmp->priority);
     /* system process - change priority and return */
-    if (!(rmp->flags & USER_PROCESS) && rmp->priority < WINNING_Q) {
+    if (rmp->priority < WINNING_Q) {
         if (rmp->priority < WINNING_Q - 1) {
             rmp->priority++;
             schedule_process(rmp);
@@ -224,7 +224,7 @@ PUBLIC int do_stop_scheduling(message *m_ptr)
 
     rmp = &schedproc[proc_nr_n];
 /* CHANGE START */
-    rmp->flags = 0; /* clear IN_USE and USER_PROCESS flags */
+    rmp->flags = 0; /* clear IN_USE flag */
 /* CHANGE START */
 
     return OK;
@@ -259,7 +259,7 @@ PUBLIC int do_start_scheduling(message *m_ptr)
     rmp->max_priority = (unsigned) m_ptr->SCHEDULING_MAXPRIO;
 /* CHANGE START */
     rmp->tickets = STARTING_TICKETS;
-    rmp->flags = 0; /* clear IN_USE and USER_PROCESS flags */
+    rmp->flags = 0; /* clear IN_USE flag */
     rmp->blocking = 0;
 /* CHANGE END */
 
@@ -285,7 +285,6 @@ PUBLIC int do_start_scheduling(message *m_ptr)
 
 /* CHANGE START */
             rmp->priority = HOLDING_Q;
-            rmp->flags |= USER_PROCESS;
 /* CHANGE END */
             rmp->time_slice = schedproc[parent_nr_n].time_slice;
             break;
